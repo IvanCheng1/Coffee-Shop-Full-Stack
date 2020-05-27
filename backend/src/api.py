@@ -85,12 +85,16 @@ def post_drink(payload):
 
     try:
         body = request.get_json()
+        recipe = body.get('recipe')
+        if not isinstance(recipe, dict):
+            recipe = recipe[0]
+        # print(body.get('recipe')[0]['name'])
         drink = Drink(
             title = body.get('title'),
             recipe = json.dumps([{
-                'name': body.get('recipe')['name'],
-                'color': body.get('recipe')['color'],
-                'parts': body.get('recipe')['parts']
+                'name': recipe['name'],
+                'color': recipe['color'],
+                'parts': recipe['parts']
             }])
         )
 
@@ -131,10 +135,14 @@ def patch_drink(payload, drink_id):
         drink.title = body.get('title', drink.title)
 
         if body.get('recipe'):
+            recipe = body.get('recipe')
+            if not isinstance(recipe, dict):
+                recipe = recipe[0]
+
             drink.recipe = json.dumps([{
-                'name': body.get('recipe')['name'],
-                'color': body.get('recipe')['color'],
-                'parts': body.get('recipe')['parts']
+                'name': recipe['name'],
+                'color': recipe['color'],
+                'parts': recipe['parts']
             }])
 
         drink.update()
